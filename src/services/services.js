@@ -1,4 +1,4 @@
-import { db } from "@/config/firebase"; // Import Firestore instance
+import { db } from "@/config/firebase"; 
 import { collection, addDoc, getDocs, getDoc, query, where, doc, updateDoc } from "firebase/firestore";
 
 export const createJob = async (jobData) => {
@@ -6,7 +6,7 @@ export const createJob = async (jobData) => {
         const docRef = await addDoc(collection(db, "jobs"), {
             ...jobData,
             created_at: new Date(),
-            status: "open", // Default status
+            status: "open", 
         });
         return { success: true, jobId: docRef.id };
     } catch (error) {
@@ -49,35 +49,33 @@ export const getJobs = async (filters = {}) => {
     }
 };
 
-// export const getJobById = async (jobId) => {
-//     try {
-//         const jobRef = doc(db, "jobs", jobId);
-//         const jobSnap = await getDoc(jobRef);
+export const getRequests = async (freelancerId) => {
+    try {
+        const requestQuery = query(
+            collection(db, "request"),
+            where("freelancer_id", "==", freelancerId) // Filter by freelancer ID
+        );
 
-//         if (jobSnap.exists()) {
-//             return { success: true, job: jobSnap.data() };
-//         } else {
-//             return { success: false, error: "Job not found" };
-//         }
-//     } catch (error) {
-//         return { success: false, error: error.message };
-//     }
-// };
+        const snapshot = await getDocs(requestQuery);
+        const requests = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
+        return { success: true, requests };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
 
-export const applyforJob = async (jobId, freelancerId, amount) => {
+export const applyforJob = async (jobId, freelancerId) => {
     try {
         const contractData = {
             jobId: jobId,
             freelancer_id: freelancerId,
-            amount,
             start_date: new Date(),
             status: "active",
         };
         const docRef = await addDoc(collection(db, "request"), contractData);
 
         const jobRef = doc(db, "jobs", jobId);
-        await updateDoc(jobRef, { status: "pending" });
 
         return { success: true, contractId: docRef.id };
     } catch (error) {
@@ -92,7 +90,7 @@ export async function getBusinessById(businessId) {
     const businessSnap = await getDoc(businessRef);
 
     if (businessSnap.exists()) {
-      return businessSnap.data(); // Return business data (includes companyName)
+      return businessSnap.data(); 
     } else {
       console.log("No such business found!");
       return null;
@@ -105,9 +103,9 @@ export async function getBusinessById(businessId) {
 
 export async function getAllBusinesses() {
   try {
-    const querySnapshot = await getDocs(collection(db, "business")); // Get all business docs
+    const querySnapshot = await getDocs(collection(db, "business")); 
     const businesses = querySnapshot.docs.map((doc) => ({
-      id: doc.id, // Firestore document ID (which is likely Clerk user ID)
+      id: doc.id, 
       ...doc.data(),
     }));
     
