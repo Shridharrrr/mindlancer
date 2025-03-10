@@ -1,12 +1,16 @@
 "use client";
-
+import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { db, storage } from "@/config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import SkillsDropdown from "@/components/SkillsDropdown";
+import { useRouter } from "next/navigation";
 
 export default function ProfileSetup() {
+    const { user } = useUser();
+    const router = useRouter()
+
   const [formData, setFormData] = useState({
     fullName: "",
     title: "",
@@ -68,9 +72,13 @@ export default function ProfileSetup() {
       experience: formData.experience,
       portfolio: formData.portfolio,
       certificateURL,
+      email: user.emailAddresses[0].emailAddress,
+     id:user.id
     });
 
     alert("Profile saved successfully!");
+    router.push('/')
+    
   };
 
   return (
@@ -146,6 +154,7 @@ export default function ProfileSetup() {
           </div>
           <button
             type="submit"
+            onSubmit={handleSubmit}
             className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
           >
             Save Profile
