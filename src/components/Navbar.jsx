@@ -6,25 +6,28 @@ import { useUser, useClerk } from "@clerk/nextjs";
 
 const Navbar = () => {
   const { user } = useUser();
-  const { signOut } = useClerk(); // Get the signOut function
+  const { signOut } = useClerk();
   const router = useRouter();
   
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Get user role from Clerk metadata
+  const userRole = user?.publicMetadata?.role; 
+
   const navItems = [
-    { name: "Login", slug: "/sign-in", active: !user },
+    { name: "Login", slug: "/log-in", active: !user },
     { name: "Signup", slug: "/sign-up", active: !user },
-    { name: "Post Job", slug: "/business/job-post", active: user },
-    { name: "Job Proposals", slug: "/business/job-proposals", active: user },
-    { name: "My Profile", slug: "/business/profile-setup", active: user },
-    { name: "My Profile", slug: "/lancer/profile-setup", active: user },
+    { name: "Post Job", slug: "/business/job-post", active: userRole === "business" },
+    { name: "Job Proposals", slug: "/business/job-proposals", active: userRole === "business" },
+    { name: "My Profile", slug: "/business/profile-setup", active: userRole === "business" },
+    { name: "My Profile", slug: "/lancer/profile-setup", active: userRole === "freelancer" },
   ];
 
   return (
     <nav className="flex items-center justify-between px-6 sm:px-10 pt-6 relative">
       <Link href={"/"}>
         <div className="font-bold text-3xl">
-          MIND<span className="text-blue-700">Lancer</span>
+          Mind<span className="text-blue-700">Lancer</span>
         </div>
       </Link>
 
