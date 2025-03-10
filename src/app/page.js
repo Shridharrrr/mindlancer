@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getJobs, getBusinessById } from "@/services/services";
+import { getJobs, getBusinessById, applyforJob } from "@/services/services";
+import { useUser } from "@clerk/clerk-react";
 
 export default function Home() {
+  const {user} = useUser()
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,8 +27,7 @@ export default function Home() {
               return job;
             })
           );
-    
-          setJobs(jobsWithCompany); // Update state with jobs that now include company names
+          setJobs(jobsWithCompany); 
         } else {
           setError(response.error);
         }
@@ -38,35 +39,25 @@ export default function Home() {
     fetchJobs();
   }, []);
 
-   const handleSubmit = async (e) => {
-          e.preventDefault();
-          setLoading(true);
-          setMessage("");
+  const handleApply = async (jobId) => {
+    if (!user) {
+      setError("You need to log in to apply for a job.");
+      return;
+    }
   
-          if (!jobData.business_id) {
-              setMessage("Error: You must be logged in to post a job.");
-              setLoading(false);
-              return;
-          }
-  
-          // Convert skills into an array
-          const formattedData = {
-              ...jobData,
-              skills_required: jobData.skills_required.split(",").map(skill => skill.trim()), 
-              budget: Number(jobData.budget),
-              deadline: new Date(jobData.deadline),
-          };
-  
-          const response = await createJob(formattedData);
-  
-          if (response.success) {
-              setMessage("Job posted successfully!");
-              router.push("/")
-          } else {
-              setMessage("Error: " + response.error);
-          }
-          setLoading(false);
-      };
+    setLoading(true);
+    try {
+      const response = await applyforJob(jobId, user.id); // Set amount dynamically if needed
+      if (response.success) {
+        alert("Application submitted successfully!");
+      } else {
+        setError(response.error);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
+    setLoading(false);
+  };
   
 
   return (
@@ -145,7 +136,7 @@ export default function Home() {
                   {job.status}
                 </span>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                type="submit">
+                 onClick={() => handleApply(job.id)}>
                   Apply
                 </button>
               </div>
