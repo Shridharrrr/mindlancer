@@ -1,15 +1,8 @@
-import { clerkMiddleware,createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const isPublic = createRouteMatcher([
-    '/sign-in',
-    '/sign-up',
-    '/',
-])
-const isPublicAPI = createRouteMatcher([
-    '/api/videos',
-   
-])
+const isPublic = createRouteMatcher(["/sign-in", "/sign-up", "/job-post"]);
+const isPublicAPI = createRouteMatcher(["/api/videos"]);
 
 export default clerkMiddleware(async (auth,req) => {
     const { userId } = await auth()
@@ -20,19 +13,15 @@ export default clerkMiddleware(async (auth,req) => {
     if(userId && isPublic(req) && !isHome){
         return NextResponse.redirect(new URL('/',req.url))
     }
-
-    if(!userId){
-      if(!isPublicAPI(req) && !isPublic(req)){
-        return NextResponse.redirect(new URL('/sign-in',req.url))
-      }
-      if(isApi && !isPublicAPI(req)){
-        return NextResponse.redirect(new URL('/sign-in',req.url))
-      }
+    if (isApi && !isPublicAPI(req)) {
+      return NextResponse.redirect(new URL("/sign-in", req.url));
     }
-    
-    return NextResponse.next()
-})
+    return NextResponse.next();
+
+  }
+
+);
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)","/","/(api|trpc)(.*)"],
-}
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};

@@ -1,4 +1,4 @@
-import { db } from "./firebase"; // Import Firestore instance
+import { db } from "@/config/firebase"; // Import Firestore instance
 import { collection, addDoc, getDocs, getDoc, query, where, doc, updateDoc } from "firebase/firestore";
 
 export const createJob = async (jobData) => {

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from "react";
 import { createJob } from "@/services/services"; // Import backend function
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs"; // Import Clerk authentication
 
 const AddJob = () => {
