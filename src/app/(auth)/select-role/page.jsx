@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-//import { db } from "@/lib/firebase"; // Import Firestore config
+import { db } from "@/config/firebase"; // Import Firestore config
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
@@ -16,11 +16,6 @@ export default function SelectRolePage() {
 
     setRole(selectedRole);
 
-    // 1️⃣ Store role in Clerk
-    await user.update({
-      publicMetadata: { role: role },
-    });
-
     // 2️⃣ Store role in Firebase
     await setDoc(doc(db, "users", user.id), {
       email: user.emailAddresses[0].emailAddress,
@@ -29,8 +24,7 @@ export default function SelectRolePage() {
     });
 
     // 3️⃣ Redirect user
-    router.push(`/${role}/profile-setup`)
-
+        router.push(`/${role}/profile-setup`)
   };
 
   return (
