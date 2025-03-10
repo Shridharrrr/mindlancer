@@ -44,7 +44,7 @@ export default function Home() {
               className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition transform hover:scale-105"
             >
               <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
-              <p className="text-gray-600 text-sm">Business ID: {job.business_id}</p>
+              <p className="text-gray-600 text-sm">Company: {job.companyName}</p>
               
               {/* Job Description */}
               <p className="mt-2 text-gray-700 text-sm">{job.description}</p>
@@ -64,9 +64,9 @@ export default function Home() {
                 <p className="text-gray-800 text-sm font-medium">
                   💰 Budget: <span className="text-blue-600">{job.budget}</span>
                 </p>
-                <p className="text-gray-800 text-sm font-medium">
+                {/* <p className="text-gray-800 text-sm font-medium">
                   💵 Payment Type: <span className="text-blue-600">{job.payment_type}</span>
-                </p>
+                </p> */}
               </div>
 
               {/* Dates */}

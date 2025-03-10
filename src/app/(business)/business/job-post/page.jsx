@@ -8,6 +8,7 @@ const AddJob = () => {
     const { user, isLoaded } = useUser(); // Get Clerk user data
     const [jobData, setJobData] = useState({
         title: "",
+        companyName:  "",
         description: "",
         skills_required: "",
         budget: "",
