@@ -14,6 +14,29 @@ export const createJob = async (jobData) => {
     }
 };
 
+export const addCompany = async (Data) => {
+    try {
+        const docRef = await addDoc(collection(db, "business"), {
+            ...Data,
+            created_at: new Date(),
+        });
+        return { success: true, jobId: docRef.id };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+};
+
+export const updateCompany = async (Data) => {
+    try {
+        const docRef = await updateDoc(collection(db, "business"), {
+            ...Data,
+        });
+        return { success: true, jobId: docRef.id };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+};
+
 export const getJobs = async (filters = {}) => {
     try {
         let jobsQuery = collection(db, "jobs");
