@@ -116,3 +116,38 @@ export const hireFreelancer = async (jobId, freelancerId, amount) => {
     }
 };
 
+
+export async function getBusinessById(businessId) {
+  try {
+    const businessRef = doc(db, "business", businessId);
+    const businessSnap = await getDoc(businessRef);
+
+    if (businessSnap.exists()) {
+      return businessSnap.data(); // Return business data (includes companyName)
+    } else {
+      console.log("No such business found!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching business:", error);
+    return null;
+  }
+}
+
+export async function getAllBusinesses() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "business")); // Get all business docs
+    const businesses = querySnapshot.docs.map((doc) => ({
+      id: doc.id, // Firestore document ID (which is likely Clerk user ID)
+      ...doc.data(),
+    }));
+    
+    return { success: true, businesses };
+  } catch (error) {
+    console.error("Error fetching businesses:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+
+

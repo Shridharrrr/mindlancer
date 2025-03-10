@@ -1,20 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getJobs } from "@/services/services";
+import { getJobs, getBusinessById } from "@/services/services";
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
     async function fetchJobs() {
       setLoading(true);
       try {
         const response = await getJobs(); // Fetch jobs from Firestore
+    
         if (response.success) {
-          setJobs(response.jobs); // Set jobs array
+          let jobsWithCompany = await Promise.all(
+            response.jobs.map(async (job) => {
+              if (job.business_id) {
+                const businessData = await getBusinessById(job.business_id); // Fetch business details
+                return { ...job, companyName: businessData?.companyName || "Unknown Company" }; // Merge data
+              }
+              return job;
+            })
+          );
+    
+          setJobs(jobsWithCompany); // Update state with jobs that now include company names
         } else {
           setError(response.error);
         }
@@ -43,18 +55,29 @@ export default function Home() {
               key={job.id}
               className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition transform hover:scale-105"
             >
-              <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
-              <p className="text-gray-600 text-sm">Company: {job.companyName}</p>
-              
+              <h3 className="text-xl font-semibold text-gray-900">
+                {job.title}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Company: {job.companyName}
+              </p>
+
               {/* Job Description */}
               <p className="mt-2 text-gray-700 text-sm">{job.description}</p>
 
               {/* Skills Required */}
               <div className="mt-3">
-                <h4 className="text-gray-800 text-sm font-medium">Skills Required:</h4>
+                <h4 className="text-gray-800 text-sm font-medium">
+                  Skills Required:
+                </h4>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {job.skills_required.map((skill, index) => (
-                    <span key={index} className="px-2 py-1 bg-gray-200 text-xs rounded-md">{skill}</span>
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-gray-200 text-xs rounded-md"
+                    >
+                      {skill}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -71,13 +94,25 @@ export default function Home() {
 
               {/* Dates */}
               <div className="mt-2 text-gray-600 text-xs">
-                <p>📅 Created At: {new Date(job.created_at).toLocaleDateString()}</p>
-                <p>⏳ Deadline: {new Date(job.deadline).toLocaleDateString()}</p>
+                <p>
+                  📅 Created At:{" "}
+                  {job.created_at
+                    ? new Date(job.created_at.seconds * 1000).toLocaleString()
+                    : "N/A"}
+                </p>
+                <p>
+                  ⏳ Deadline:{" "}
+                  {job.deadline
+                    ? new Date(job.deadline.seconds * 1000).toLocaleString()
+                    : "N/A"}
+                </p>
               </div>
 
               {/* Apply Button */}
               <div className="mt-4 flex justify-between items-center">
-                <span className="text-green-600 font-medium capitalize">{job.status}</span>
+                <span className="text-green-600 font-medium capitalize">
+                  {job.status}
+                </span>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                   Apply
                 </button>
