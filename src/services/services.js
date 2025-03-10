@@ -26,24 +26,6 @@ export const addCompany = async (Data) => {
 };
 
 
-export const getFreelancers = async () => {
-    try {
-        let LancerQuery = collection(db, "freelancer");
-
-        // if (filters.skills) {
-        //     jobsQuery = query(jobsQuery, where("skills_required", "array-contains", filters.skills));
-        // }
-
-        const snapshot = await getDocs(jobsQuery);
-
-        const lancers = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-        return { success: true, lancers };
-    } catch (error) {
-        return { success: false, error: error.message };
-    }
-};
-
 export const getJobs = async (filters = {}) => {
     try {
         let jobsQuery = collection(db, "jobs");
@@ -82,33 +64,20 @@ export const getJobs = async (filters = {}) => {
 //     }
 // };
 
-export const applyForJob = async (applicationData) => {
-    try {
-        const docRef = await addDoc(collection(db, "proposals"), {
-            ...applicationData,
-            status: "pending",
-            applied_at: new Date(),
-        });
-        return { success: true, proposalId: docRef.id };
-    } catch (error) {
-        return { success: false, error: error.message };
-    }
-};
 
-
-export const hireFreelancer = async (jobId, freelancerId, amount) => {
+export const applyforJob = async (jobId, freelancerId, amount) => {
     try {
         const contractData = {
-            job_id: jobId,
+            jobId: jobId,
             freelancer_id: freelancerId,
             amount,
             start_date: new Date(),
             status: "active",
         };
-        const docRef = await addDoc(collection(db, "contracts"), contractData);
+        const docRef = await addDoc(collection(db, "request"), contractData);
 
         const jobRef = doc(db, "jobs", jobId);
-        await updateDoc(jobRef, { status: "hired" });
+        await updateDoc(jobRef, { status: "pending" });
 
         return { success: true, contractId: docRef.id };
     } catch (error) {

@@ -38,6 +38,37 @@ export default function Home() {
     fetchJobs();
   }, []);
 
+   const handleSubmit = async (e) => {
+          e.preventDefault();
+          setLoading(true);
+          setMessage("");
+  
+          if (!jobData.business_id) {
+              setMessage("Error: You must be logged in to post a job.");
+              setLoading(false);
+              return;
+          }
+  
+          // Convert skills into an array
+          const formattedData = {
+              ...jobData,
+              skills_required: jobData.skills_required.split(",").map(skill => skill.trim()), 
+              budget: Number(jobData.budget),
+              deadline: new Date(jobData.deadline),
+          };
+  
+          const response = await createJob(formattedData);
+  
+          if (response.success) {
+              setMessage("Job posted successfully!");
+              router.push("/")
+          } else {
+              setMessage("Error: " + response.error);
+          }
+          setLoading(false);
+      };
+  
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Available Jobs</h2>
@@ -113,7 +144,8 @@ export default function Home() {
                 <span className="text-green-600 font-medium capitalize">
                   {job.status}
                 </span>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                type="submit">
                   Apply
                 </button>
               </div>

@@ -18,6 +18,7 @@ export default function ProfileSetup() {
     experience: "",
     portfolio: "",
     certificate: null,
+    freelancer_id:user.id
   });
 
   const skillsOptions = [

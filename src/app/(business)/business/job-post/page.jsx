@@ -8,12 +8,12 @@ const AddJob = () => {
     const { user, isLoaded } = useUser(); // Get Clerk user data
     const [jobData, setJobData] = useState({
         title: "",
-        companyName:  "",
+        companyName: '',
         description: "",
         skills_required: "",
         budget: "",
         deadline: "",
-        business_id: "", // This will be set dynamically
+        business_id: '', // This will be set dynamically
     });
 
     const [loading, setLoading] = useState(false);
@@ -21,8 +21,30 @@ const AddJob = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (isLoaded && user) {
-            setJobData((prev) => ({ ...prev, business_id: user.id })); // Set business ID from Clerk
+        const fetchBusinessDetails = async () => {
+            if (isLoaded && user) {
+                const businessId = user.id;
+                try {
+                    // Reference to the specific business document in Firestore
+                    const businessRef = doc(db, "business", businessId);
+                    const businessSnap = await getDoc(businessRef);
+
+                    if (businessSnap.exists()) {
+                        const businessData = businessSnap.data();
+                        setJobData((prev) => ({
+                            ...prev,
+                            business_id: businessId,
+                            companyName: businessData.companyName, // Fetch company name
+                        }));
+                    } else {
+                        console.error("Business not found in Firestore");
+                        setMessage("Error: Business not found in database.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching business details:", error);
+                    setMessage("Error fetching business details.");
+                }
+            }
         }
     }, [isLoaded, user]);
 
@@ -53,7 +75,7 @@ const AddJob = () => {
 
         if (response.success) {
             setMessage("Job posted successfully!");
-            setTimeout(() => router.push("/"), 2000); // Redirect to home page
+            router.push("/")
         } else {
             setMessage("Error: " + response.error);
         }

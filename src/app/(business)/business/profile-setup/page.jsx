@@ -13,7 +13,7 @@ export default function CompanyForm() {
     need: "",
     website: "",
     email: user.emailAddresses[0].emailAddress,
-    id:user.id
+    business_id:user.id
   });
 
   const handleChange = (e) => {
