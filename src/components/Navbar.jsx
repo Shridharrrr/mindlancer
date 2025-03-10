@@ -15,12 +15,13 @@ const Navbar = () => {
   const userRole = user?.publicMetadata?.role; 
 
   const navItems = [
-    { name: "Login", slug: "/log-in", active: !user },
+    { name: "Login", slug: "/sign-in", active: !user },
     { name: "Signup", slug: "/sign-up", active: !user },
-    { name: "Post Job", slug: "/business/job-post", active: userRole === "business" },
-    { name: "Job Proposals", slug: "/business/job-proposals", active: userRole === "business" },
-    { name: "My Profile", slug: "/business/profile-setup", active: userRole === "business" },
-    { name: "My Profile", slug: "/lancer/profile-setup", active: userRole === "freelancer" },
+    { name: "Post Job", slug: "/business/job-post", active: user },
+    { name: "Job Proposals", slug: "/business/job-proposals", active: user },
+    { name: "My Profile", slug: "/business/profile-setup", active: user },
+    { name: "My Profile", slug: "/lancer/profile-setup", active: user},
+    { name: "My Requests", slug: "/lancer/my-requests", active: user},
   ];
 
   return (

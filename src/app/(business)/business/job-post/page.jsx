@@ -56,13 +56,13 @@ const AddJob = () => {
         e.preventDefault();
         setLoading(true);
         setMessage("");
-
+    
         if (!jobData.business_id) {
             setMessage("Error: You must be logged in to post a job.");
             setLoading(false);
             return;
         }
-
+    
         // Convert skills into an array
         const formattedData = {
             ...jobData,
@@ -70,17 +70,20 @@ const AddJob = () => {
             budget: Number(jobData.budget),
             deadline: new Date(jobData.deadline),
         };
-
+    
         const response = await createJob(formattedData);
-
+    
         if (response.success) {
+            // Create an application request entry
+            await createApplication(response.id, user);  // Pass jobId and user data
             setMessage("Job posted successfully!");
-            router.push("/")
+            router.push("/");
         } else {
             setMessage("Error: " + response.error);
         }
         setLoading(false);
     };
+    
 
     return (
         <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded">

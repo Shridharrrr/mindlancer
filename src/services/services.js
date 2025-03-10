@@ -117,4 +117,28 @@ export async function getAllBusinesses() {
 }
 
 
+export const createApplication = async (jobId, user) => {
+    try {
+        if (!user || !user.id) {
+            throw new Error("User is not logged in.");
+        }
+
+        const applicationsRef = collection(db, "applications"); // Reference to Firestore collection
+
+        const applicationData = {
+            jobId: jobId, // The ID of the job
+            applicant_id: user.id, // Clerk user ID
+            applicant_email: user.primaryEmailAddress?.emailAddress || "No email provided",
+            applied_at: serverTimestamp(), // Firestore timestamp
+        };
+
+        await addDoc(applicationsRef, applicationData);
+        return { success: true };
+    } catch (error) {
+        console.error("Error creating application:", error);
+        return { success: false, error: error.message };
+    }
+};
+
+
 
