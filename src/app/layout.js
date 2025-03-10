@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import {
   ClerkProvider} from '@clerk/nextjs'
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,8 +24,9 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header className="flex justify-end items-center p-4 gap-4 h-16">
-
+      <Navbar/>
+        <header className="flex justify-between items-center p-4 gap-4 h-16">
+        
         </header>
         {children}
       </body>
