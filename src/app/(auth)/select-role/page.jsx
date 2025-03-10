@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { db } from "@/config/firebase"; // Import Firestore config
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { addCompany } from "@/services/services";
 
 export default function SelectRolePage() {
   const { user } = useUser();
@@ -17,14 +18,13 @@ export default function SelectRolePage() {
     setRole(selectedRole);
 
     // 2️⃣ Store role in Firebase
-    await setDoc(doc(db, "users", user.id), {
+    await addCompany({
       email: user.emailAddresses[0].emailAddress,
-      role: selectedRole,
       createdAt: new Date(),
     });
 
     // 3️⃣ Redirect user
-        router.push(`/${role}/profile-setup`)
+        router.push(`/${selectedRole}/profile-setup`)
   };
 
   return (
