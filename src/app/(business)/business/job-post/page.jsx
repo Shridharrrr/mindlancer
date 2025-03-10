@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from "react";
 import { createJob } from "@/services/services"; // Import backend function
 import { useRouter } from "next/router";
