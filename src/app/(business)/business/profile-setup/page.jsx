@@ -1,24 +1,29 @@
 "use client"
-
-import { updateCompany } from "@/services/services";
+import { useUser } from "@clerk/nextjs";
+import { addCompany } from "@/services/services";
 import { useState } from "react";
 
 export default function CompanyForm() {
+  const { user } = useUser();
+
   const [formData, setFormData] = useState({
     companyName: "",
     description: "",
     industry: "",
     need: "",
     website: "",
+    email: user.emailAddresses[0].emailAddress,
+    id:user.id
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateCompany(formData)
+    addCompany(formData)
     console.log("Form Data Submitted:", formData);
 
     // You can send this data to Firebase or any backend here

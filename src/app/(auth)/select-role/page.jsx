@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { addCompany } from "@/services/services";
 
 export default function SelectRolePage() {
-  const { user } = useUser();
   const [role, setRole] = useState(null);
   const router = useRouter();
 
@@ -18,11 +16,15 @@ export default function SelectRolePage() {
     // 2️⃣ Store role in Firebase
     await addCompany({
       email: user.emailAddresses[0].emailAddress,
-      createdAt: new Date(),
+      id:user.id
     });
 
     // 3️⃣ Redirect user
-        router.push(`/${selectedRole}/profile-setup`)
+        if(role === 'freelancer')
+            router.push("/lancer/profile-setup")
+        else
+        router.push("/business/profile-setup")
+
   };
 
   return (

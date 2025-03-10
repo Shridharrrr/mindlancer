@@ -15,10 +15,9 @@ export const createJob = async (jobData) => {
 };
 
 export const addCompany = async (Data) => {
-    try {
+    try {        
         const docRef = await addDoc(collection(db, "business"), {
             ...Data,
-            created_at: new Date(),
         });
         return { success: true, jobId: docRef.id };
     } catch (error) {
@@ -26,12 +25,20 @@ export const addCompany = async (Data) => {
     }
 };
 
-export const updateCompany = async (Data) => {
+
+export const getFreelancers = async () => {
     try {
-        const docRef = await updateDoc(collection(db, "business"), {
-            ...Data,
-        });
-        return { success: true, jobId: docRef.id };
+        let LancerQuery = collection(db, "freelancer");
+
+        // if (filters.skills) {
+        //     jobsQuery = query(jobsQuery, where("skills_required", "array-contains", filters.skills));
+        // }
+
+        const snapshot = await getDocs(jobsQuery);
+
+        const lancers = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        return { success: true, lancers };
     } catch (error) {
         return { success: false, error: error.message };
     }
@@ -108,3 +115,4 @@ export const hireFreelancer = async (jobId, freelancerId, amount) => {
         return { success: false, error: error.message };
     }
 };
+
