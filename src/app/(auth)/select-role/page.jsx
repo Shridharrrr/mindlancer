@@ -22,7 +22,7 @@ export default function SelectRolePage() {
     });
 
     // 2️⃣ Store role in Firebase
-    await setDoc(doc(db, "users", user.id), {
+    await setDoc(doc(db, "Freelancer", user.id), {
       email: user.emailAddresses[0].emailAddress,
       role: selectedRole,
       createdAt: new Date(),

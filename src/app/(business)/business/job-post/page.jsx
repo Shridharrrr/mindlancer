@@ -52,7 +52,7 @@ const AddJob = () => {
 
         if (response.success) {
             setMessage("Job posted successfully!");
-            setTimeout(() => router.push("/jobs"), 2000); // Redirect to jobs page
+            setTimeout(() => router.push("/"), 2000); // Redirect to home page
         } else {
             setMessage("Error: " + response.error);
         }
