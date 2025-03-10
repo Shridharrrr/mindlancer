@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { db } from "@/config/firebase"; // Import Firestore config
-import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { addCompany } from "@/services/services";
 
